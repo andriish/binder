@@ -15,6 +15,7 @@
 #define _INCLUDED_binder_hpp_
 
 
+#include "llvm/Config/llvm-config.h"
 #include "llvm/Support/CommandLine.h"
 
 extern llvm::cl::opt<bool> O_annotate_includes;
@@ -22,6 +23,7 @@ extern llvm::cl::opt<bool> O_single_file;
 extern llvm::cl::opt<int>  O_multiple_files;
 extern llvm::cl::opt<bool> O_trace;
 extern llvm::cl::opt<bool> O_verbose;
+extern llvm::cl::opt<bool> O_flat;
 
 namespace binder {
 } // namespace binder
