@@ -1,80 +1,108 @@
-on: [push]
+name: build
+on:
+ push:
+ pull_request:
+ schedule:
+#Every 5 days at midnight 
+    - cron:  "0 0 1/5 * *"
 
 jobs:
-  compilejobcentos7:
-    runs-on: ubuntu-latest
-    name: Checkout_and_compile_binder_on_centos7
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Compile
-      id: hello
-      uses: ./.github/workflows/centos7
-    # Use the output from the `hello` step
-    - name: Get the output status
-      run: echo "The status was ${{ steps.hello.outputs.out }}"
-  compilejobcentos8:
-    runs-on: ubuntu-latest
-    name: Checkout_and_compile_binder_on_centos8
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Compile
-      id: hello
-      uses: ./.github/workflows/centos8
-    # Use the output from the `hello` step
-    - name: Get the output status
-      run: echo "The status was ${{ steps.hello.outputs.out }}"
 
-  compilejobfedora31:
+  compilejobFedora26:
     runs-on: ubuntu-latest
-    name: Checkout_and_compile_binder_on_fedora31
+    name: Binder_on_Fedora26
     steps:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Compile
-      id: hello
+      id: compileindocker
+      uses: ./.github/workflows/fedora26
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+  compilejobFedora27:
+    runs-on: ubuntu-latest
+    name: Binder_on_Fedora27
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/fedora27
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+  compilejobFedora28:
+    runs-on: ubuntu-latest
+    name: Binder_on_Fedora28
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/fedora28
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+  compilejobFedora29:
+    runs-on: ubuntu-latest
+    name: Binder_on_Fedora29
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/fedora29
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+  compilejobFedora30:
+    runs-on: ubuntu-latest
+    name: Binder_on_Fedora30
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/fedora30
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+
+  compilejobFedora31:
+    runs-on: ubuntu-latest
+    name: Binder_on_Fedora31
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
       uses: ./.github/workflows/fedora31
-    # Use the output from the `hello` step
     - name: Get the output status
-      run: echo "The status was ${{ steps.hello.outputs.out }}"
+      run: exit ${{ steps.compileindocker.outputs.out }}
 
-  compilejobubuntu18:
-    runs-on: ubuntu-latest
-    name: Checkout_and_compile_binder_on_ubuntu18
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Compile
-      id: hello
-      uses: ./.github/workflows/ubuntu18
-    # Use the output from the `hello` step
-    - name: Get the output status
-      run: echo "The status was ${{ steps.hello.outputs.out }}"
-      
-  compilejobubuntu19:
-    runs-on: ubuntu-latest
-    name: Checkout_and_compile_binder_on_ubuntu19
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Compile
-      id: hello
-      uses: ./.github/workflows/ubuntu19
-    # Use the output from the `hello` step
-    - name: Get the output status
-      run: echo "The status was ${{ steps.hello.outputs.out }}"
 
-      
-  compilejobubuntu20:
+  compilejobFedora32:
     runs-on: ubuntu-latest
-    name: Checkout_and_compile_binder_on_ubuntu20
+    name: Binder_on_Fedora32
     steps:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Compile
-      id: hello
-      uses: ./.github/workflows/ubuntu20
-    # Use the output from the `hello` step
+      id: compileindocker
+      uses: ./.github/workflows/fedora32
     - name: Get the output status
-      run: echo "The status was ${{ steps.hello.outputs.out }}"
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+
+  compilejobFedora33:
+    runs-on: ubuntu-latest
+    name: Binder_on_Fedora33
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/fedora33
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}

@@ -138,8 +138,7 @@ public:
 			clang::DiagnosticsEngine& di = ci->getDiagnostics();
 #if  (LLVM_VERSION_MAJOR < 10)
 			di.setSuppressAllDiagnostics();
-#endif
-#if  (LLVM_VERSION_MAJOR >= 10)
+#else
 			di.setSuppressAllDiagnostics(true);
 #endif
 		}

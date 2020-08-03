@@ -271,9 +271,7 @@ string get_text(comments::Comment const *C, SourceManager const & SM, SourceLoca
 				previous = (*i)->getBeginLoc(); // getBeginLoc();
 				r += '\n';
 			}
-#endif
-
-			
+#endif		
 			r += get_text(*i, SM, previous);
 		}
 
