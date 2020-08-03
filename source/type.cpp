@@ -332,7 +332,6 @@ void add_relevant_includes(QualType const &qt, /*const ASTContext &context,*/ In
  #if  (LLVM_VERSION_MAJOR >= 4)
 	if( EnumDecl *e = dyn_cast_or_null<EnumDecl>( qt->getAsTagDecl() ) ) add_relevant_includes(e, includes, level);
 #endif
-
 }
 
 
@@ -385,7 +384,6 @@ bool is_bindable(QualType const &qt)
 #endif
  #if  (LLVM_VERSION_MAJOR >= 4)
 		if( TagDecl *td = tp->getAsTagDecl() ) {
-
 			if( td->getAccess() == AS_protected  or  td->getAccess() == AS_private  ) return false;
 		}
 #endif
@@ -509,8 +507,9 @@ string simplify_std_class_name(string const &type)
 	//r = R.sub("std::set<\\1>", r);
 
 	string res = type;
+
 #if (LLVM_VERSION_MAJOR < 4)
-    return res;
+        return res;
 #endif
 	static vector< std::pair<llvm::Regex, string> > regex_map;
 

@@ -202,12 +202,14 @@ string function_pointer_type(FunctionDecl const *F)
 		prefix = m->isStatic() ? "" : class_qualified_name( cast<CXXRecordDecl>( F->getParent() ) ) + "::";
 	    maybe_const = m->isConst() ? " const" : "";
 	}
-#if  (LLVM_VERSION_MAJOR < 4)
+
+#if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
 	r += standard_name( F->getResultType().getCanonicalType().getAsString() );  r+= " ({}*)("_format(prefix);
 #endif
-#if  (LLVM_VERSION_MAJOR >= 4)
+#if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
 	r += standard_name( F->getReturnType().getCanonicalType().getAsString() );  r+= " ({}*)("_format(prefix);
 #endif
+
 	r += function_arguments(F);
 
 	r += ")" + maybe_const;
@@ -224,18 +226,15 @@ string function_qualified_name(FunctionDecl const *F, bool omit_return_type)
 	string maybe_const;
 	if( auto m = dyn_cast<CXXMethodDecl>(F) ) maybe_const = m->isConst() ? " const" : "";
 
-#if  (LLVM_VERSION_MAJOR < 4)
+#if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
 	string r = ( omit_return_type ? "" : F->getResultType().getCanonicalType().getAsString() + " " ) +
 		       standard_name( F->getQualifiedNameAsString() + template_specialization(F) ) + "(" + function_arguments(F) + ")" + maybe_const;
-
 #endif
-#if  (LLVM_VERSION_MAJOR >= 4)
+#if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
 	string r = ( omit_return_type ? "" : F->getReturnType().getCanonicalType().getAsString() + " " ) +
 		       standard_name( F->getQualifiedNameAsString() + template_specialization(F) ) + "(" + function_arguments(F) + ")" + maybe_const;
 
 #endif
-
-
 	fix_boolean_types(r);
 	return r;
 }
@@ -252,14 +251,12 @@ vector<QualType> get_type_dependencies(FunctionDecl const *F)
 {
 	vector<QualType> r;
 
-#if  (LLVM_VERSION_MAJOR < 4)
+#if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
 	r.push_back( F->getResultType() ); //.getDesugaredType(F->getASTContext()) );
 #endif
-#if  (LLVM_VERSION_MAJOR >= 4)
+#if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
 	r.push_back( F->getReturnType() ); //.getDesugaredType(F->getASTContext()) );
-
 #endif
-	
 	for(uint i=0; i<F->getNumParams(); ++i) r.push_back(F->getParamDecl(i)->getOriginalType()/*.getDesugaredType(F->getASTContext())*/ );
 
 	//if( F->getTemplatedKind() == FunctionDecl::TK_MemberSpecialization  or   F->getTemplatedKind() == FunctionDecl::TK_FunctionTemplateSpecialization ) {
@@ -330,10 +327,10 @@ string bind_function(FunctionDecl const *F, uint args_to_bind, bool request_bind
 
 		documentation = generate_documentation_string_for_declaration(F);
 		if( documentation.size() ) documentation += "\\n\\n";
-#if  (LLVM_VERSION_MAJOR < 4)
+#if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
 		documentation += "C++: " + F->getQualifiedNameAsString() + "(" + function_arguments(F) + ')' + (m  and  m->isConst() ? " const" : "") + " --> " + standard_name( F->getResultType().getCanonicalType().getAsString() );
 #endif
-#if  (LLVM_VERSION_MAJOR >= 4)
+#if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
 		documentation += "C++: " + F->getQualifiedNameAsString() + "(" + function_arguments(F) + ')' + (m  and  m->isConst() ? " const" : "") + " --> " + standard_name( F->getReturnType().getCanonicalType().getAsString() );
 #endif
 	}
@@ -341,11 +338,12 @@ string bind_function(FunctionDecl const *F, uint args_to_bind, bool request_bind
 		pair<string, string> args = function_arguments_for_lambda(F, args_to_bind);
 		//string args; for(uint i=0; i<args_to_bind; ++i) args += "a" + std::to_string(i) + ( i+1 == args_to_bind ? "" : ", " );
 
-#if  (LLVM_VERSION_MAJOR < 4)
+#if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
 		string return_type = standard_name( F->getResultType().getCanonicalType().getAsString() );
 #endif
-#if  (LLVM_VERSION_MAJOR >= 4)
+#if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
 		string return_type = standard_name( F->getReturnType().getCanonicalType().getAsString() );
+
 #endif
 		// workaround of GCC bug during lambda specification: replace enum/struct/class/const_* from begining of the lambda return type with //const*
 		static vector< std::pair<string, string> > const name_map = {
@@ -373,7 +371,7 @@ string bind_function(FunctionDecl const *F, uint args_to_bind, bool request_bind
 	}
 
 	string maybe_return_policy = "";
-#if  (LLVM_VERSION_MAJOR < 4)
+#if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
 	if( m  and  !m->isStatic() ) {
 		if     ( F->getResultType()->isPointerType() )         maybe_return_policy = ", " + Config::get().default_member_pointer_return_value_policy();
 		else if( F->getResultType()->isLValueReferenceType() ) maybe_return_policy = ", " + Config::get().default_member_lvalue_reference_return_value_policy();
@@ -384,7 +382,7 @@ string bind_function(FunctionDecl const *F, uint args_to_bind, bool request_bind
 		else if( F->getResultType()->isRValueReferenceType() ) maybe_return_policy = ", " + Config::get().default_static_rvalue_reference_return_value_policy();
 	}
 #endif
-#if  (LLVM_VERSION_MAJOR >= 4)
+#if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
 	if( m  and  !m->isStatic() ) {
 		if     ( F->getReturnType()->isPointerType() )         maybe_return_policy = ", " + Config::get().default_member_pointer_return_value_policy();
 		else if( F->getReturnType()->isLValueReferenceType() ) maybe_return_policy = ", " + Config::get().default_member_lvalue_reference_return_value_policy();
@@ -394,14 +392,17 @@ string bind_function(FunctionDecl const *F, uint args_to_bind, bool request_bind
 		else if( F->getReturnType()->isLValueReferenceType() ) maybe_return_policy = ", " + Config::get().default_static_lvalue_reference_return_value_policy();
 		else if( F->getReturnType()->isRValueReferenceType() ) maybe_return_policy = ", " + Config::get().default_static_rvalue_reference_return_value_policy();
 	}
+
 #endif
 	//string r = R"(.def{}("{}", ({}) &{}{}, "doc")"_format(maybe_static, function_name, function_pointer_type(F), function_qualified_name, template_specialization(F));
 	string r = R"(.def{}("{}", {}, "{}"{})"_format(maybe_static, function_name, function, documentation, maybe_return_policy);
-#if  (LLVM_VERSION_MAJOR < 4)
+#if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
 	if(request_bindings_f) request_bindings(F->getResultType().getCanonicalType(), context);
 #endif
-#if  (LLVM_VERSION_MAJOR >= 4)
+#if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
+
 	if(request_bindings_f) request_bindings(F->getReturnType().getCanonicalType(), context);
+
 #endif
 	for(uint i=0; i<F->getNumParams()  and  i < args_to_bind; ++i) {
 		r += ", pybind11::arg(\"{}\")"_format( string( F->getParamDecl(i)->getName() ) );
@@ -481,10 +482,10 @@ bool is_bindable(FunctionDecl const *F)
 
 	r &= F->getTemplatedKind() != FunctionDecl::TK_FunctionTemplate  /*and  !F->isOverloadedOperator()*/  and  !isa<CXXConversionDecl>(F)  and  !F->isDeleted();
 
-#if  (LLVM_VERSION_MAJOR < 4)
+#if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
 	QualType rt( F->getResultType() );
 #endif
-#if  (LLVM_VERSION_MAJOR >= 4)
+#if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
 	QualType rt( F->getReturnType() );
 #endif
 
