@@ -131,10 +131,3 @@ should be set simultaneously via the location of their cmake configurations, i.e
 Alternatively,the location of the llvm-config script could be set.
 
 ``cmake CMakeLists.txt   -DLLVMCONFIG=/usr/lib64/llvm7.0/bin/llvm-config``
-
-
-By default cmake will build some tests and use python for some simple tests.
-To disable tests use  ``-DBINDER_ENABLE_TEST=OFF``. To suggest python versions to perform tests with use options like
-``-BINDER_TEST_PYTHON_VERSIONS=2,3.5``.  Note that version 0 can be used to check the generated sources agains the reference sources.
-
-
