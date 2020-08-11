@@ -46,7 +46,35 @@ if(USE_EXTERNAL_LLVM)
   string (REPLACE "-fno-exceptions" ""     CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
   message(STATUS "binder: LLVMSO=${LLVMSO}")
   message(STATUS "binder: CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
-  if ( (LLVM_VERSION_MAJOR GREATER 3)  AND (LLVM_VERSION_MAJOR LESS 8) )
+  
+if (LLVM_VERSION_MAJOR EQUAL 3  )
+target_link_libraries(binder PRIVATE
+-Wl,--start-group
+${lib_llvm_so_path}
+clang
+clangAnalysis 
+clangARCMigrate
+clangAST
+clangASTMatchers
+clangBasic 
+clangCodeGen
+clangDriver
+clangDynamicASTMatchers
+clangEdit 
+clangFormat 
+clangFrontend
+clangFrontendTool
+clangLex 
+clangParse
+clangRewriteFrontend
+clangSema
+clangSerialization
+clangTooling
+-Wl,--end-group
+)
+endif()
+
+if ( (LLVM_VERSION_MAJOR GREATER 3)  AND (LLVM_VERSION_MAJOR LESS 8) )
     target_link_libraries(binder 
       PRIVATE
       ${lib_llvm_so_path}
