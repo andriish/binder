@@ -100,6 +100,7 @@ if(USE_EXTERNAL_LLVM)
   endif()
 
   if ( (LLVM_VERSION_MAJOR GREATER 3)  AND (LLVM_VERSION_MAJOR LESS 8) )
+    set(STATIC_BUILD_REQUIRED_STATIC_LIBRARY_NAMES   LLVMOption LLVMSupport LLVMBitReader LLVMMC LLVMTransformUtils LLVMCore LLVMMCParser tinfo)
     check_static_libraries()
     target_link_libraries(binder PRIVATE
       ${STATIC_LINK_FLAG}  ${STATIC_BUILD_STATIC_LIBRARIES} 
@@ -112,6 +113,7 @@ if(USE_EXTERNAL_LLVM)
       )
   endif()
   if ( (LLVM_VERSION_MAJOR EQUAL 8) OR (LLVM_VERSION_MAJOR EQUAL 9) )
+    set(STATIC_BUILD_REQUIRED_STATIC_LIBRARY_NAMES   LLVMOption LLVMSupport LLVMBitReader LLVMMC LLVMTransformUtils LLVMCore LLVMMCParser tinfo)
     check_static_libraries()
     target_link_libraries(binder PRIVATE 
       ${STATIC_LINK_FLAG} ${STATIC_BUILD_STATIC_LIBRARIES} 
@@ -125,6 +127,7 @@ if(USE_EXTERNAL_LLVM)
       )
   endif()
   if ( (LLVM_VERSION_MAJOR EQUAL 10) OR (LLVM_VERSION_MAJOR GREATER 10) )
+    set(STATIC_BUILD_REQUIRED_STATIC_LIBRARY_NAMES   LLVMOption LLVMSupport LLVMBitReader LLVMMC LLVMTransformUtils LLVMCore LLVMMCParser tinfo)
     check_static_libraries()
     target_link_libraries(binder PRIVATE 
       ${STATIC_LINK_FLAG} ${STATIC_BUILD_STATIC_LIBRARIES} 
