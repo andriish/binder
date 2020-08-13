@@ -10,9 +10,11 @@ yum -y install yum-plugin-copr
 yum -y copr enable averbyts/pybind11
 yum -y install pybind11-devel
 yum -y install  python3 python3-devel python python-devel 
+
 cmake3 CMakeLists.txt -DSTATIC_BUILD=ON
 make
-ctest . --output-on-failure 
-
 out=$?
+ldd source/binder
+ldd -u -r source/binder
+ctest . --output-on-failure 
 echo ::set-output name=out::$out
