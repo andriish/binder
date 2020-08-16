@@ -20,6 +20,18 @@ jobs:
     - name: Get the output status
       run: exit ${{ steps.compileindocker.outputs.out }}
 
+  compilejobFedora26static:
+    runs-on: ubuntu-latest
+    name: Binder_on_Fedora26static
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/fedora26static
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
   compilejobFedora27:
     runs-on: ubuntu-latest
     name: Binder_on_Fedora27
@@ -94,6 +106,18 @@ jobs:
     - name: Get the output status
       run: exit ${{ steps.compileindocker.outputs.out }}
 
+  compilejobFedora32static:
+    runs-on: ubuntu-latest
+    name: Binder_on_Fedora32static
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/fedora32static
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
 
   compilejobFedora33:
     runs-on: ubuntu-latest
@@ -104,5 +128,44 @@ jobs:
     - name: Compile
       id: compileindocker
       uses: ./.github/workflows/fedora33
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+
+  compilejobFedora33static:
+    runs-on: ubuntu-latest
+    name: Binder_on_Fedora33static
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/fedora33static
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+
+  compilejobCentOS7:
+    runs-on: ubuntu-latest
+    name: Binder_on_CentOS7
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/centos7
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+
+  compilejobCentOS7static:
+    runs-on: ubuntu-latest
+    name: Binder_on_CentOS7static
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/centos7static
     - name: Get the output status
       run: exit ${{ steps.compileindocker.outputs.out }}
