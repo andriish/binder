@@ -81,7 +81,7 @@ set( binder_tests
          T12.operator
          T15.copy
          T15.inner_class
-         #T17.anonymous
+         T17.anonymous
          T20.template
          T30.include
          T31.include_for_class
