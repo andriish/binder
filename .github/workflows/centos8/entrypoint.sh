@@ -9,9 +9,12 @@ yum -y install yum-plugin-copr
 yum -y copr enable averbyts/pybind11
 yum -y install pybind11-devel
 yum -y install  python3 python3-devel python2 python2-devel
+
 cmake CMakeLists.txt
 make
+ldd source/binder
+ldd -u -r source/binder
 ctest . --output-on-failure 
-
 out=$?
+cat Testing/Temporary/LastTest.log
 echo ::set-output name=out::$out

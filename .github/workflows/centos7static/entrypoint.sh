@@ -13,8 +13,9 @@ yum -y install  python3 python3-devel python python-devel
 
 cmake3 CMakeLists.txt -DSTATIC_BUILD=ON
 make
-out=$?
 ldd source/binder
 ldd -u -r source/binder
 ctest . --output-on-failure 
+out=$?
+cat Testing/Temporary/LastTest.log
 echo ::set-output name=out::$out
