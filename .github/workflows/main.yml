@@ -106,6 +106,19 @@ jobs:
     - name: Get the output status
       run: exit ${{ steps.compileindocker.outputs.out }}
 
+  compilejobCentOS8:
+    runs-on: ubuntu-latest
+    name: Binder_on_CentOS8
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Compile
+      id: compileindocker
+      uses: ./.github/workflows/centos8
+    - name: Get the output status
+      run: exit ${{ steps.compileindocker.outputs.out }}
+
+
   compilejobCentOS7:
     runs-on: ubuntu-latest
     name: Binder_on_CentOS7
