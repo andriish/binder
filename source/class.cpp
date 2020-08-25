@@ -659,10 +659,10 @@ string bind_member_functions_for_call_back(CXXRecordDecl const *C, string const 
 			// }
 
 #if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
-			string return_type = m->getResultType().getCanonicalType().getAsString();  fix_boolean_types(return_type);
+			string return_type = standard_name(m->getResultType().getCanonicalType().getAsString());  fix_boolean_types(return_type);
 #endif
 #if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
-			string return_type = m->getReturnType().getCanonicalType().getAsString();  fix_boolean_types(return_type);
+			string return_type = standard_name(m->getReturnType().getCanonicalType().getAsString());  fix_boolean_types(return_type);
 #endif			
 
 			// check if we need to fix return class to be 'derived-class &' or 'derived-class *'
@@ -700,7 +700,7 @@ string bind_member_functions_for_call_back(CXXRecordDecl const *C, string const 
 					if( fpt->getExceptionSpecType() & (clang::ExceptionSpecificationType::EST_DynamicNone | clang::ExceptionSpecificationType::EST_Dynamic | clang::ExceptionSpecificationType::EST_MSAny) ) exception_specification = "throw() ";
 				}
 
-				c += "\t{} {}({}){} {}override {{ "_format(return_type, m->getNameAsString(), std::get<0>(args), m->isConst() ? " const" : "", exception_specification);
+				c += "\t{} {}({}){} {}override {{"_format(return_type, m->getNameAsString(), std::get<0>(args), m->isConst() ? " const" : "", exception_specification);
 
 				c += indent( fmt::format(call_back_function_body_template, class_name, /*class_qualified_name(C), */python_name, std::get<1>(args), return_type), "\t\t");
 				if( m->isPure() ) c+= "\t\tpybind11::pybind11_fail(\"Tried to call pure virtual function \\\"{}::{}\\\"\");\n"_format(C->getNameAsString(), python_name);
