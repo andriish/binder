@@ -10,6 +10,8 @@
 /// @brief  Various helper functions
 /// @author Sergey Lyskov
 
+#include <iostream>
+#include <sys/stat.h>
 #include <util.hpp>
 
 #include <binder.hpp>
@@ -109,8 +111,17 @@ void update_source_file(std::string const &prefix, std::string const &file_name,
 	for(auto &d : dirs) path += "/" + d;
 
 	//std::experimental::filesystem::create_directories(path);
-	string command_line = "mkdir -p " + path;
-	system( command_line.c_str() );
+	//string command_line = "mkdir -p " + path;
+	//system( command_line.c_str() );
+	string dir_to_create("");
+	if (!path.empty()) if (path.at(0)=='/')  dir_to_create="/";
+	for(auto &d: split(path, "/")) { 
+		dir_to_create += ( d + '/' ); 
+		int status=mkdir(dir_to_create.c_str(),ACCESSPERMS);
+		if (status==0||status==EEXIST) continue;
+		std::cerr<<"Failed to create directory: "<<dir_to_create<<std::endl;
+		exit(1);
+	} 
 
 	string full_file_name = prefix + '/' + file_name;
 	std::ifstream f(full_file_name);
