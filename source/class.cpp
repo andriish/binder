@@ -142,13 +142,19 @@ bool is_bindable(FieldDecl *f)
 
 	if( !is_field_assignable(f) ) return false;
 
+	if( f->isAnonymousStructOrUnion() ) return false;
+
 	return true;
 }
 
 
 // Generate bindings for class data member
-string bind_data_member(FieldDecl const *d, string const &class_qualified_name)
+string bind_data_member(FieldDecl const *d, string const &class_qualified_name_)
 {
+	string class_qualified_name = class_qualified_name_;
+	string const anonymous = "::(anonymous)";
+	if( ends_with(class_qualified_name, anonymous) ) class_qualified_name.resize( class_qualified_name.size() - anonymous.size() );
+
 	if( d->getType().isConstQualified() ) return ".def_readonly(\"{}\", &{}::{})"_format(d->getNameAsString(), class_qualified_name, d->getNameAsString());
 	else return ".def_readwrite(\"{}\", &{}::{})"_format(d->getNameAsString(), class_qualified_name, d->getNameAsString());
 }
@@ -243,8 +249,13 @@ bool is_bindable_raw(clang::CXXRecordDecl const *C)
 
 	//if( C->getNameAsString() == "" ) return false;
 
+	// enabling binding of anonymous classes and handle it as special case in `bind_nested_classes`
 	//if( qualified_name == "(anonymous)" ) return false;
-	if( qualified_name.rfind(')') != std::string::npos ) return false; // check for anonymous structs and types in anonymous namespaces
+	//if( qualified_name.rfind(')') != std::string::npos ) return false; // check for anonymous structs and types in anonymous namespaces
+
+	// disabling bindings for anonymous namespace's
+	// if( qualified_name.rfind("(anonymous namespace)") != std::string::npos ) return false;
+	if( C->isInAnonymousNamespace() ) return false;
 
 	if( C->isDependentType() ) return false;
 	if( C->getAccess() == AS_protected  or  C->getAccess() == AS_private ) return false;
@@ -479,6 +490,10 @@ void ClassBinder::add_relevant_includes(IncludeSet &includes) const
 		for(auto const & i : pci->second) includes.add_include(O_annotate_includes ? i + " // +include_for_class" : i);
 	}
 
+	for_public_nested_classes([&includes](CXXRecordDecl const *innerC) {
+		ClassBinder(innerC).add_relevant_includes(includes);
+	});
+
 	for(auto & m : prefix_includes ) binder::add_relevant_includes(m, includes, 0);
 	binder::add_relevant_includes(C, includes, 0);
 
@@ -626,7 +641,7 @@ string bind_member_functions_for_call_back(CXXRecordDecl const *C, string const 
 			// 	(*m)->dump();
 			// }
 
-			string return_type = m->getReturnType().getCanonicalType().getAsString();  fix_boolean_types(return_type);
+			string return_type = standard_name( m->getReturnType().getCanonicalType().getAsString() );  fix_boolean_types(return_type);
 
 			// check if we need to fix return class to be 'derived-class &' or 'derived-class *'
 			// if( m->isVirtual() ) {
@@ -663,7 +678,7 @@ string bind_member_functions_for_call_back(CXXRecordDecl const *C, string const 
 					if( fpt->getExceptionSpecType() & (clang::ExceptionSpecificationType::EST_DynamicNone | clang::ExceptionSpecificationType::EST_Dynamic | clang::ExceptionSpecificationType::EST_MSAny) ) exception_specification = "throw() ";
 				}
 
-				c += "\t{} {}({}){} {}override {{ "_format(return_type, m->getNameAsString(), std::get<0>(args), m->isConst() ? " const" : "", exception_specification);
+				c += "\t{} {}({}){} {}override {{"_format(return_type, m->getNameAsString(), std::get<0>(args), m->isConst() ? " const" : "", exception_specification);
 
 				c += indent( fmt::format(call_back_function_body_template, class_name, /*class_qualified_name(C), */python_name, std::get<1>(args), return_type), "\t\t");
 				if( m->isPure() ) c+= "\t\tpybind11::pybind11_fail(\"Tried to call pure virtual function \\\"{}::{}\\\"\");\n"_format(C->getNameAsString(), python_name);
@@ -1024,20 +1039,35 @@ std::string ClassBinder::bind_repr(Context &context)
 }
 
 
-string ClassBinder::bind_nested_classes(CXXRecordDecl const *EC, Context &context)
+void ClassBinder::for_public_nested_classes(std::function<void(clang::CXXRecordDecl const *)> const &f) const
 {
-	string c;
-	for(auto d = EC->decls_begin(); d != EC->decls_end(); ++d) {
-		if(CXXRecordDecl *C = dyn_cast<CXXRecordDecl>(*d) ) {
-			if( C->getAccess() == AS_public  and  is_bindable(C) ) {
-				//c += "\t// Binding " + C->getNameAsString() + ";\n";
-				ClassBinder b(C);
-				b.bind(context);
-				c += b.code();  c += '\n';
-				prefix_code_ += b.prefix_code();
+	for(auto d = C->decls_begin(); d != C->decls_end(); ++d) {
+		if(CXXRecordDecl *innerC = dyn_cast<CXXRecordDecl>(*d)) {
+			if(innerC->getAccess() == AS_public) f(innerC);
+		}
+		else if(ClassTemplateDecl *ct = dyn_cast<ClassTemplateDecl>(*d)) {
+			if(ct->getAccess() == AS_public) {
+				for(auto s = ct->spec_begin(); s != ct->spec_end(); ++s) {
+					if(CXXRecordDecl *innerC = dyn_cast<CXXRecordDecl>(*s)) f(innerC);
+				}
 			}
 		}
 	}
+}
+
+
+string ClassBinder::bind_nested_classes(Context &context)
+{
+	string c;
+	for_public_nested_classes([&c, &context, this](CXXRecordDecl const *innerC) {
+		if(is_bindable(innerC)) {
+			//c += "\t// Binding " + C->getNameAsString() + ";\n";
+			ClassBinder b(innerC);
+			b.bind(context);
+			c += b.code();  c += '\n';
+			prefix_code_ += b.prefix_code();
+		}
+	});
 	return c;
 }
 
@@ -1063,7 +1093,9 @@ void ClassBinder::bind(Context &context)
 	if(trampoline) generate_prefix_code();
 
 	string const qualified_name{ class_qualified_name(C) };
-	string const module_variable_name = C->isCXXClassMember() ? "enclosing_class" : context.module_variable_name( namespace_from_named_decl(C) );
+
+	bool named_class = not C->isAnonymousStructOrUnion();
+	string const module_variable_name = C->isCXXClassMember() and named_class ? "enclosing_class" : context.module_variable_name( namespace_from_named_decl(C) );
 	//string const decl_namespace = namespace_from_named_decl(C);
 
 	string c = "{ " + generate_comment_for_declaration(C);
@@ -1071,7 +1103,7 @@ void ClassBinder::bind(Context &context)
 	//c += " // qualified_name: {}\n"_format(qualified_name);
 	//c += " // getQualifiedNameAsString: {}{}\n"_format( C->getQualifiedNameAsString(), template_specialization(C) );
 
-	if( C->isCXXClassMember() ) c += "\tauto & enclosing_class = cl;\n";
+	if( C->isCXXClassMember() and named_class ) c += "\tauto & enclosing_class = cl;\n";
 
 	//c += "// namespace: " + namespace_from_named_decl(C->getOuterLexicalRecordContext()) + "\n";
 
@@ -1086,14 +1118,14 @@ void ClassBinder::bind(Context &context)
 
 	string maybe_trampoline = callback_structure_constructible ? ", " + binding_qualified_name : "";
 
-	c += '\t' + R"(pybind11::class_<{}{}{}{}> cl({}, "{}", "{}");)"_format(qualified_name, maybe_holder_type, maybe_trampoline, maybe_base_classes(context), module_variable_name, python_class_name(C), generate_documentation_string_for_declaration(C)) + '\n';
+	if(named_class) c += '\t' + R"(pybind11::class_<{}{}{}{}> cl({}, "{}", "{}");)"_format(qualified_name, maybe_holder_type, maybe_trampoline, maybe_base_classes(context), module_variable_name, python_class_name(C), generate_documentation_string_for_declaration(C)) + '\n';
 	//c += "\tpybind11::handle cl_type = cl;\n\n";
 
-	c += bind_nested_classes(C, context);
+	c += bind_nested_classes(context);
 
 	//if( C->isAbstract()  and  callback_structure) c += "\tcl.def(pybind11::init<>());\n";
 
-	if( !C->isAbstract()  or  callback_structure_constructible) {
+	if( (!C->isAbstract()  or  callback_structure_constructible) and named_class ) {
 		bool default_constructor_processed = false;
 		//bool copy_constructor_processed = false;
 
