@@ -511,6 +511,10 @@ void ClassBinder::add_relevant_includes(IncludeSet &includes) const
 		for(auto const & i : pci->second) includes.add_include(O_annotate_includes ? i + " // +include_for_class" : i);
 	}
 
+	for_public_nested_classes([&includes](CXXRecordDecl const *innerC) {
+		ClassBinder(innerC).add_relevant_includes(includes);
+	});
+
 	for(auto & m : prefix_includes ) binder::add_relevant_includes(m, includes, 0);
 	binder::add_relevant_includes(C, includes, 0);
 
@@ -659,10 +663,10 @@ string bind_member_functions_for_call_back(CXXRecordDecl const *C, string const 
 			// }
 
 #if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
-			string return_type = m->getResultType().getCanonicalType().getAsString();  fix_boolean_types(return_type);
+			string return_type = standard_name(m->getResultType().getCanonicalType().getAsString());  fix_boolean_types(return_type);
 #endif
 #if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
-			string return_type = m->getReturnType().getCanonicalType().getAsString();  fix_boolean_types(return_type);
+			string return_type = standard_name(m->getReturnType().getCanonicalType().getAsString());  fix_boolean_types(return_type);
 #endif			
 
 			// check if we need to fix return class to be 'derived-class &' or 'derived-class *'
@@ -700,7 +704,7 @@ string bind_member_functions_for_call_back(CXXRecordDecl const *C, string const 
 					if( fpt->getExceptionSpecType() & (clang::ExceptionSpecificationType::EST_DynamicNone | clang::ExceptionSpecificationType::EST_Dynamic | clang::ExceptionSpecificationType::EST_MSAny) ) exception_specification = "throw() ";
 				}
 
-				c += "\t{} {}({}){} {}override {{ "_format(return_type, m->getNameAsString(), std::get<0>(args), m->isConst() ? " const" : "", exception_specification);
+				c += "\t{} {}({}){} {}override {{"_format(return_type, m->getNameAsString(), std::get<0>(args), m->isConst() ? " const" : "", exception_specification);
 
 				c += indent( fmt::format(call_back_function_body_template, class_name, /*class_qualified_name(C), */python_name, std::get<1>(args), return_type), "\t\t");
 				if( m->isPure() ) c+= "\t\tpybind11::pybind11_fail(\"Tried to call pure virtual function \\\"{}::{}\\\"\");\n"_format(C->getNameAsString(), python_name);
@@ -1061,20 +1065,35 @@ std::string ClassBinder::bind_repr(Context &context)
 }
 
 
-string ClassBinder::bind_nested_classes(CXXRecordDecl const *EC, Context &context)
+void ClassBinder::for_public_nested_classes(std::function<void(clang::CXXRecordDecl const *)> const &f) const
 {
-	string c;
-	for(auto d = EC->decls_begin(); d != EC->decls_end(); ++d) {
-		if(CXXRecordDecl *C = dyn_cast<CXXRecordDecl>(*d) ) {
-			if( C->getAccess() == AS_public  and  is_bindable(C) ) {
-				//c += "\t// Binding " + C->getNameAsString() + ";\n";
-				ClassBinder b(C);
-				b.bind(context);
-				c += b.code();  c += '\n';
-				prefix_code_ += b.prefix_code();
+	for(auto d = C->decls_begin(); d != C->decls_end(); ++d) {
+		if(CXXRecordDecl *innerC = dyn_cast<CXXRecordDecl>(*d)) {
+			if(innerC->getAccess() == AS_public) f(innerC);
+		}
+		else if(ClassTemplateDecl *ct = dyn_cast<ClassTemplateDecl>(*d)) {
+			if(ct->getAccess() == AS_public) {
+				for(auto s = ct->spec_begin(); s != ct->spec_end(); ++s) {
+					if(CXXRecordDecl *innerC = dyn_cast<CXXRecordDecl>(*s)) f(innerC);
+				}
 			}
 		}
 	}
+}
+
+
+string ClassBinder::bind_nested_classes(Context &context)
+{
+	string c;
+	for_public_nested_classes([&c, &context, this](CXXRecordDecl const *innerC) {
+		if(is_bindable(innerC)) {
+			//c += "\t// Binding " + C->getNameAsString() + ";\n";
+			ClassBinder b(innerC);
+			b.bind(context);
+			c += b.code();  c += '\n';
+			prefix_code_ += b.prefix_code();
+		}
+	});
 	return c;
 }
 
@@ -1128,7 +1147,7 @@ void ClassBinder::bind(Context &context)
 	if(named_class) c += '\t' + R"(pybind11::class_<{}{}{}{}> cl({}, "{}", "{}");)"_format(qualified_name, maybe_holder_type, maybe_trampoline, maybe_base_classes(context), module_variable_name, python_class_name(C), generate_documentation_string_for_declaration(C)) + '\n';
 	//c += "\tpybind11::handle cl_type = cl;\n\n";
 
-	c += bind_nested_classes(C, context);
+	c += bind_nested_classes(context);
 
 	//if( C->isAbstract()  and  callback_structure) c += "\tcl.def(pybind11::init<>());\n";
 
