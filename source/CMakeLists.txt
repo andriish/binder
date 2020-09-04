@@ -45,8 +45,14 @@ if(USE_EXTERNAL_LLVM)
                                LLVM-${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}
                                LLVM-${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}
                                PATHS  ${LLVM_LIBRARY_DIR}  ${LLVMLIBDIR}  ${LLVM_LIBRARY_DIR}/../bin  ${LLVMLIBDIR}/../bin
-                               REQUIRED
+#                               REQUIRED
                                )
+   
+   if (NOT lib_llvm_path)
+   set(lib_llvm_path  D:/a/_temp/msys/msys64/mingw64/bin/libLLVM.dll )
+   
+   endif()
+
   endif()
   add_definitions(${LLVM_DEFINITIONS})
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LLVM_COMPILE_FLAGS}")
