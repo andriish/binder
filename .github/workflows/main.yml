@@ -32,7 +32,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: CI-Build
-        run: powershell \.github\workflows\Win64\entrypoint.sh
+        run: powershell .github\workflows\Win64\entrypoint.sh
         
         
   #compilejobFedora26:
