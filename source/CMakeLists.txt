@@ -40,11 +40,11 @@ if(USE_EXTERNAL_LLVM)
                                REQUIRED
                                )
   else()
-    find_library(lib_llvm_path NAMES LLVM
+    find_library(lib_llvm_path NAMES LLVM   LLVM.dll.a  LLVM.a
                                LLVM-${LLVM_VERSION_MAJOR}
                                LLVM-${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}
                                LLVM-${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}
-                               PATHS  ${LLVM_LIBRARY_DIR}  ${LLVMLIBDIR}
+                               PATHS  ${LLVM_LIBRARY_DIR}  ${LLVMLIBDIR}  ${LLVM_LIBRARY_DIR}/../bin  ${LLVMLIBDIR}/../bin
                                REQUIRED
                                )
   endif()
