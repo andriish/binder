@@ -20,12 +20,12 @@ jobs:
         with:
           msystem: MINGW64
           update: true
-          install: git mingw-w64-x86_64-toolchain
+          install: git mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang-tools-extra mingw-w64-x86_64-llvm mingw-w64-x86_64-cmake mingw-w64-x86_64-python
       - name: CI-Build
 #        uses: ./.github/workflows/MSYS2
         run: |
           echo 'Running in MSYS2!'
-          ./ci-build.sh
+          ./.github/workflows/MSYS2/entrypoint.sh
 
 
   #compilejobFedora26:
