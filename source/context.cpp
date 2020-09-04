@@ -125,7 +125,7 @@ clang::FunctionDecl const * Context::global_insertion_operator(clang::CXXRecordD
 
 	if( auto t = dyn_cast<ClassTemplateSpecializationDecl>(C) ) { // if operator<< is template it will have different form: std::ostream & (*)(std::ostream &, const A<type-parameter-0-0> &)
 		op_pointer = "std::ostream & (*)(std::ostream &, const " + standard_name(C->getNameAsString()) + "<";  // Note: we do not use `getQualifiedNameAsString` because if argument is templated it string representation will not have namespaces
-		for(uint i=0; i < t->getTemplateArgs().size(); ++i) op_pointer += "type-parameter-0-" + std::to_string(i) + ", ";
+		for(unsigned int i=0; i < t->getTemplateArgs().size(); ++i) op_pointer += "type-parameter-0-" + std::to_string(i) + ", ";
 		op_pointer.pop_back();  op_pointer.back() = '>';
 		fix_boolean_types(op_pointer);
 		op_pointer += " &)";
@@ -384,7 +384,7 @@ void Context::generate(Config const &config)
 	sort_binders();
 
 	outs() << "Writing code...\n";
-	for(uint i=0; i<binders.size(); ++i) {
+	for(unsigned int i=0; i<binders.size(); ++i) {
 		if( /*binders[i]->is_binded()  and*/  binders[i]->code().size() ) {
 
 			string np, file_name;

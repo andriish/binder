@@ -41,7 +41,7 @@ vector<string> split(string const &buffer, string const & separator)
 	string line;
 	vector<string> lines;
 
-	for(uint i=0; i<buffer.size(); ++i) {
+	for(unsigned int i=0; i<buffer.size(); ++i) {
 		if( buffer.compare(i, separator.size(), separator) ) line.push_back( buffer[i] );
 		else {
 			lines.push_back(line);
@@ -297,7 +297,7 @@ std::string generate_documentation_string_for_declaration(clang::Decl const* dec
 
 		text = get_text(comment, sm, SourceLocation());
 
-		uint i=0;
+		unsigned int i=0;
 		for(; i<text.size()  and  (text[i]==' ' or text[i]=='\n'); ++i) {}
 		if(i) text = text.substr(i);
 

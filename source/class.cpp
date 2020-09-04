@@ -47,7 +47,7 @@ string template_specialization(clang::CXXRecordDecl const *C)
 	if( auto t = dyn_cast<ClassTemplateSpecializationDecl>(C) ) {
 		templ += "<";
 
-		for(uint i=0; i < t->getTemplateArgs().size(); ++i) {
+		for(unsigned int i=0; i < t->getTemplateArgs().size(); ++i) {
 			//if( t->getTemplateArgs()[i].isInstantiationDependent() ) break;  // avoid explicitly specifying SFINAE related arguments
 
 			//outs() << " template argument: " << template_argument_to_string(t->getTemplateArgs()[i]) << "\n";
@@ -94,7 +94,7 @@ vector<QualType> get_type_dependencies(CXXRecordDecl const *C /*, bool include_m
 	vector<QualType> r;
 
 	if( auto t = dyn_cast<ClassTemplateSpecializationDecl>(C) ) {
-		for(uint i=0; i < t->getTemplateArgs().size(); ++i) {
+		for(unsigned int i=0; i < t->getTemplateArgs().size(); ++i) {
 			if( t->getTemplateArgs()[i].getKind() == TemplateArgument::Type ) {
 				r.push_back( t->getTemplateArgs()[i].getAsType() /*.getDesugaredType(C->getASTContext())*/ );
 			}
@@ -192,7 +192,7 @@ bool is_std_function_bindable(CXXRecordDecl const *C)
         //outs() << "is_std_function_bindable( " << class_qualified_name(C) << "\n";
         if( auto t = dyn_cast<ClassTemplateSpecializationDecl>(C) ) {
 
-                for(uint i=0; i < t->getTemplateArgs().size(); ++i) {
+                for(unsigned int i=0; i < t->getTemplateArgs().size(); ++i) {
 
                         if (t->getTemplateArgs()[i].getKind() == TemplateArgument::Declaration) {
                                 //outs() << " template argument: " << template_argument_to_string(t->getTemplateArgs()[i]) << "\n";
@@ -202,7 +202,7 @@ bool is_std_function_bindable(CXXRecordDecl const *C)
 
                                 if( FunctionProtoType const *ft = dyn_cast<FunctionProtoType>( qt.getTypePtr() ) ) {
                                         if( not is_bindable( ft->getReturnType() ) ) return false;
-                                        for(uint i=0; i < ft->getNumParams(); ++i) {
+                                        for(unsigned int i=0; i < ft->getNumParams(); ++i) {
                                                 if( not is_bindable( ft->getParamType(i) ) ) return false;
                                         }
                                 }
@@ -288,7 +288,7 @@ bool is_bindable_raw(clang::CXXRecordDecl const *C)
 	}
 
 	// if( auto t = dyn_cast<ClassTemplateSpecializationDecl>(C) ) {
-	// 	for(uint i=0; i < t->getTemplateArgs().size(); ++i) {
+	// 	for(unsigned int i=0; i < t->getTemplateArgs().size(); ++i) {
 
 	// 		if( t->getTemplateArgs()[i].getKind() == TemplateArgument::Type ) {
 	// 			if( !is_bindable( t->getTemplateArgs()[i].getAsType() ) ) return false;
@@ -347,7 +347,7 @@ void add_relevant_includes(clang::CXXRecordDecl const *C, IncludeSet &includes, 
 
 	if( auto t = dyn_cast<ClassTemplateSpecializationDecl>(C) ) {
 
-		for(uint i=0; i < t->getTemplateArgs().size(); ++i) {
+		for(unsigned int i=0; i < t->getTemplateArgs().size(); ++i) {
 			if( t->getTemplateArgs()[i].getKind() == TemplateArgument::Type ) {
 				add_relevant_includes( t->getTemplateArgs()[i].getAsType().getDesugaredType(C->getASTContext()) , includes, level+1);
 			}
@@ -396,7 +396,7 @@ void add_relevant_includes(clang::CXXRecordDecl const *C, IncludeSet &includes, 
 			// if( FunctionDecl const *td = ft->getTemplatedDecl() ) {
 			// 	td->dump();
 			// 	if( TemplateArgumentList const *ta = td->getTemplateSpecializationArgs() ) {
-			// 		for(uint i=0; i < ta->size(); ++i) {
+			// 		for(unsigned int i=0; i < ta->size(); ++i) {
 			// 			outs() << "function template argument: " << template_argument_to_string( ta->get(i) ) << "\n";
 			// 			if( ta->get(i).isDependent() ) {
 			// 				outs() << "isDependent!" << "\n";
@@ -887,7 +887,7 @@ void ClassBinder::bind_with(string const &binder, Context &context)
 	c += '\t' + binder + standard_name( template_specialization(C) ) + '(' + module_variable_name;
 
 	if( auto t = dyn_cast<ClassTemplateSpecializationDecl>(C) ) {
-		for(uint i=0; i < t->getTemplateArgs().size(); ++i) {
+		for(unsigned int i=0; i < t->getTemplateArgs().size(); ++i) {
 
 			string templ = mangle_type_name( standard_name( template_argument_to_string(t->getTemplateArgs()[i]) ), true);
 			fix_boolean_types(templ);
@@ -925,8 +925,8 @@ char const * constructor_with_trampoline_template = "\tcl.def( pybind11::init( [
 
 // Generate binding for given function: .def("foo", (std::string (aaaa::A::*)(int) ) &aaaa::A::foo, "doc")
 // constructor_types is pair<Base, Alias> - if one of these is absent empty string is expected
-//string bind_constructor(CXXConstructorDecl const *T, pair<string, string> const &constructor_types, uint args_to_bind, bool request_bindings_f, Context &context)
-string bind_constructor(ConstructorBindingInfo const &CBI, uint args_to_bind, bool request_bindings_f)
+//string bind_constructor(CXXConstructorDecl const *T, pair<string, string> const &constructor_types, unsigned int args_to_bind, bool request_bindings_f, Context &context)
+string bind_constructor(ConstructorBindingInfo const &CBI, unsigned int args_to_bind, bool request_bindings_f)
 {
 	//string function_name = python_function_name(F);
 	//string function_qualified_name { F->getQualifiedNameAsString() };
@@ -935,7 +935,7 @@ string bind_constructor(ConstructorBindingInfo const &CBI, uint args_to_bind, bo
 	if( args_to_bind == CBI.T->getNumParams()  and  not CBI.T->isVariadic()) {
 		c = "\tcl.def( pybind11::init<{}>()"_format( function_arguments(CBI.T) );
 
-		for(uint i=0; i<CBI.T->getNumParams()  and  i < args_to_bind; ++i) {
+		for(unsigned int i=0; i<CBI.T->getNumParams()  and  i < args_to_bind; ++i) {
 			c += ", pybind11::arg(\"{}\")"_format( string( CBI.T->getParamDecl(i)->getName() ) );
 
 			if(request_bindings_f) request_bindings( CBI.T->getParamDecl(i)->getOriginalType(), CBI.context);
@@ -950,7 +950,7 @@ string bind_constructor(ConstructorBindingInfo const &CBI, uint args_to_bind, bo
 
 		string args_helper;
 
-		for(uint i=0; i<CBI.T->getNumParams()  and  i < args_to_bind; ++i) {
+		for(unsigned int i=0; i<CBI.T->getNumParams()  and  i < args_to_bind; ++i) {
 			args_helper += ", pybind11::arg(\"{}\")"_format( string( CBI.T->getParamDecl(i)->getName() ) );
 		}
 
@@ -1022,7 +1022,7 @@ string bind_constructor(ConstructorBindingInfo const &CBI)
 {
 	string code;
 
-	uint args_to_bind = 0;
+	unsigned int args_to_bind = 0;
 	for(; args_to_bind < CBI.T->getNumParams(); ++args_to_bind) {
 		if( CBI.T->getParamDecl(args_to_bind)->hasDefaultArg() ) break;
 	}

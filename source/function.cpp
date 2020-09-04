@@ -64,7 +64,7 @@ string function_arguments(clang::FunctionDecl const *record)
 {
 	string r;
 
-	for(uint i=0; i<record->getNumParams(); ++i) {
+	for(unsigned int i=0; i<record->getNumParams(); ++i) {
 		r += standard_name( record->getParamDecl(i)->getOriginalType().getCanonicalType().getAsString() );
 		if( i+1 != record->getNumParams() ) r += ", ";
 	}
@@ -78,11 +78,11 @@ string function_arguments(clang::FunctionDecl const *record)
 // Generate function argument list separate by comma
 // name_arguments - if arguments should be named: a1, a2, ...
 // n - number of arguments to generate. If n > num_of_function_parameters - generate only list with num_of_function_parameters
-pair<string, string> function_arguments_for_lambda(clang::FunctionDecl const *record, uint n)
+pair<string, string> function_arguments_for_lambda(clang::FunctionDecl const *record, unsigned int n)
 {
 	string r, a;
 
-	for(uint i=0; i<record->getNumParams()  and  i<n; ++i) {
+	for(unsigned int i=0; i<record->getNumParams()  and  i<n; ++i) {
 		QualType qt = record->getParamDecl(i)->getOriginalType().getCanonicalType();
 		r += qt.getAsString() + ' ';
 		if( !qt->isReferenceType()  and  !qt->isPointerType() ) r += !qt.isConstQualified() ? "const & " : "& ";
@@ -103,7 +103,7 @@ tuple<string, string, string> function_arguments_for_py_overload(clang::Function
 {
 	string r, a, p;
 
-	for(uint i=0; i<record->getNumParams(); ++i) {
+	for(unsigned int i=0; i<record->getNumParams(); ++i) {
 		QualType qt = record->getParamDecl(i)->getOriginalType().getCanonicalType();
 		r += qt.getAsString() + ' ' + "a" + std::to_string(i);
 		a += "a" + std::to_string(i);
@@ -144,7 +144,7 @@ string template_specialization(FunctionDecl const *F)
 		// if( FunctionDecl const *master = F->getTemplateInstantiationPattern() ) {
 		// 	outs() << "master for: " << F->getNameAsString() << "\n";
 		// 	if( TemplateArgumentList const *ta = F->getTemplateSpecializationArgs() ) {
-		// 		for(uint i=0; i < ta->size(); ++i) {
+		// 		for(unsigned int i=0; i < ta->size(); ++i) {
 		// 			string arg = template_argument_to_string( ta->get(i) );
 		// 			outs() << arg << " kind: " << ta->get(i).getKind()  << "\n";
 		// 		}
@@ -154,7 +154,7 @@ string template_specialization(FunctionDecl const *F)
 		if( TemplateArgumentList const *ta = F->getTemplateSpecializationArgs() ) {
 
 			templ += "<";
-			for(uint i=0; i < ta->size(); ++i) {
+			for(unsigned int i=0; i < ta->size(); ++i) {
 				//if( ta->get(i).getKind() != TemplateArgument::ArgKind::Null ) {
 				//outs() << "function: '" << F->getNameAsString() << "' template argument[" << i << "]=" << template_argument_to_string( ta->get(i) ) << " kind:" << ta->get(i).getKind() << "\n";
 
@@ -248,12 +248,12 @@ vector<QualType> get_type_dependencies(FunctionDecl const *F)
 	vector<QualType> r;
 
 	r.push_back( F->getReturnType() ); //.getDesugaredType(F->getASTContext()) );
-	for(uint i=0; i<F->getNumParams(); ++i) r.push_back(F->getParamDecl(i)->getOriginalType()/*.getDesugaredType(F->getASTContext())*/ );
+	for(unsigned int i=0; i<F->getNumParams(); ++i) r.push_back(F->getParamDecl(i)->getOriginalType()/*.getDesugaredType(F->getASTContext())*/ );
 
 	//if( F->getTemplatedKind() == FunctionDecl::TK_MemberSpecialization  or   F->getTemplatedKind() == FunctionDecl::TK_FunctionTemplateSpecialization ) {
 	if( F->getTemplatedKind() != FunctionDecl::TK_NonTemplate  ) {
 		if( TemplateArgumentList const *tal = F->getTemplateSpecializationArgs() ) {
-			for(uint i=0; i < tal->size(); ++i) {
+			for(unsigned int i=0; i < tal->size(); ++i) {
 				TemplateArgument const &ta( tal->get(i) );
 				if( ta.getKind() == TemplateArgument::Type ) r.push_back( ta.getAsType() );
 			}
@@ -303,7 +303,7 @@ bool is_skipping_requested(FunctionDecl const *F, Config const &config)
 
 
 // Generate binding for given function: .def("foo", (std::string (aaaa::A::*)(int) ) &aaaa::A::foo, "doc")
-string bind_function(FunctionDecl const *F, uint args_to_bind, bool request_bindings_f, Context &context, CXXRecordDecl const *parent, bool always_use_lambda)
+string bind_function(FunctionDecl const *F, unsigned int args_to_bind, bool request_bindings_f, Context &context, CXXRecordDecl const *parent, bool always_use_lambda)
 {
 	string function_name = python_function_name(F);
 
@@ -322,7 +322,7 @@ string bind_function(FunctionDecl const *F, uint args_to_bind, bool request_bind
 	}
 	else {
 		pair<string, string> args = function_arguments_for_lambda(F, args_to_bind);
-		//string args; for(uint i=0; i<args_to_bind; ++i) args += "a" + std::to_string(i) + ( i+1 == args_to_bind ? "" : ", " );
+		//string args; for(unsigned int i=0; i<args_to_bind; ++i) args += "a" + std::to_string(i) + ( i+1 == args_to_bind ? "" : ", " );
 
 		string return_type = standard_name( F->getReturnType().getCanonicalType().getAsString() );
 
@@ -367,7 +367,7 @@ string bind_function(FunctionDecl const *F, uint args_to_bind, bool request_bind
 
 	if(request_bindings_f) request_bindings(F->getReturnType().getCanonicalType(), context);
 
-	for(uint i=0; i<F->getNumParams()  and  i < args_to_bind; ++i) {
+	for(unsigned int i=0; i<F->getNumParams()  and  i < args_to_bind; ++i) {
 		r += ", pybind11::arg(\"{}\")"_format( string( F->getParamDecl(i)->getName() ) );
 
 		if(request_bindings_f) request_bindings( F->getParamDecl(i)->getOriginalType(), context);
