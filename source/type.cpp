@@ -76,6 +76,8 @@ string relevant_include(NamedDecl const *decl)
 	FileID fid = sm.getFileID( decl->getLocation() );
 	SourceLocation include = sm.getIncludeLoc(fid);
 
+	//outs() << "SL: "; include.dump(sm); outs() << "\n";
+
 	string include_string;
 	if( include.isValid() ) {
 		char const *data = sm.getCharacterData(include);
@@ -112,7 +114,11 @@ void add_relevant_include_for_decl(NamedDecl const *decl, IncludeSet &includes/*
 			   }
 			 },
 
-			 { "<locale>", {"std::ctype", "std::ctype_byname", "std::ctype_base", "std::locale", "std::money_base", "std::messages_base", "std::numpunct", "std::num_get", "std::num_put", "std::numpunct_byname", "std::time_base", "std::codecvt", "std::codecvt_base", "std::codecvt_byname"} },
+			 { "<locale>", {"std::ctype", "std::ctype_byname", "std::ctype_base", "std::locale",
+							"std::money_base", "std::money_base::pattern",
+							"std::messages_base", "std::numpunct", "std::num_get", "std::num_put", "std::numpunct_byname",
+							"std::time_base", "std::codecvt", "std::codecvt_base", "std::codecvt_byname"}
+			 },
 
 			 { "<regex>", {"std::basic_regex", "std::regex_traits"} },
 
@@ -126,7 +132,7 @@ void add_relevant_include_for_decl(NamedDecl const *decl, IncludeSet &includes/*
 
 			 { "<memory>", {"std::uninitialized_copy"} },
 
-			 { "<functional>", {"std::function"} },
+			 { "<functional>", {"std::function", "std::_Manager_operation", "std::bad_function_call"} },
 
 			};
 
