@@ -32,9 +32,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: CI-Build
-        run: |
-          echo 'Running in MSYS2!'
-          ./.github/workflows/MSYS2/entrypoint.sh
+        run: powershell \.github\workflows\Win64\entrypoint.sh
+        
+        
   #compilejobFedora26:
     #runs-on: ubuntu-latest
     #name: Binder_on_Fedora26
