@@ -9,6 +9,6 @@ ls D:/a/_temp/msys/msys64/mingw64/lib/libLLVM.*
 
 
 cmake CMakeLists.txt -DBINDER_TEST_PYTHON_VERSIONS=0
-make
+cmake --build . 
 ldd source/binder
 ctest 
