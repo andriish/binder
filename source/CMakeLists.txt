@@ -34,6 +34,17 @@ add_clang_executable(binder
   fmt/posix.cc
   )
 if(USE_EXTERNAL_LLVM)
+  if (MSVC)
+#This is a workaround for VC memory problem and false positive warnings.
+    set(MSVC_CXX_FLAGS_TO_CHECK "/bigobj" "/EHsc" "/D_CRT_SECURE_NO_WARNINGS" "/wd4267" "/wd4244" "/wd4477" "/wd4624")
+    foreach(fl ${MSVC_CXX_FLAGS_TO_CHECK})
+      CHECK_CXX_COMPILER_FLAG(${fl} COMPILER_SUPPORTS_${fl})
+      if(COMPILER_SUPPORTS_${fl})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${fl}")
+      endif()
+    endforeach(fl ${MSVC_CXX_FLAGS_TO_CHECK})
+  endif()
+
   if(STATIC)
     find_library(lib_llvm_path NAMES libclang_static_bundled.a
                                PATHS ${LLVM_LIBRARY_DIR}
@@ -50,7 +61,6 @@ if(USE_EXTERNAL_LLVM)
    
    if (NOT lib_llvm_path)
    set(lib_llvm_path  D:/a/_temp/msys/msys64/mingw64/bin/libLLVM.dll )
-   
    endif()
 
   endif()
