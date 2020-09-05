@@ -56,6 +56,35 @@ bool is_bindable(EnumDecl const *E)
 	return true;
 }
 
+#if  (LLVM_VERSION_MAJOR ==3 )
+// This function takes care about the LLVM/Clang bug which was fixed in LLVM6/Clang6.
+// The body of the function is a backport from LLVM6.
+std::string getQualifiedNameAsStringLLVM3Fix( NamedDecl const *E) {
+	std::string correct;
+	llvm::raw_string_ostream OS(correct);
+	DeclContext const *Ctx = E->getDeclContext();
+	SmallVector<DeclContext const *, 10> Contexts;
+	while (Ctx && isa<NamedDecl>(Ctx)) {
+		Contexts.push_back(Ctx);
+		Ctx = Ctx->getParent();
+	}
+	for (auto DCI=Contexts.rbegin(); DCI!=Contexts.rend();++DCI) {
+		auto DC=*DCI;
+		if (const auto *ED = dyn_cast<EnumDecl>(DC)) {
+			if ( ED->isScoped() ) {
+				OS<<*ED; OS<<"::";
+				} else continue;
+		} else { 
+			OS << *cast<NamedDecl>(DC);  
+			OS<<"::";
+		}
+	}
+	if ((E->getDeclName())) OS<<*E; else  OS<<"(anonymous)";
+	return correct;
+}
+#endif
+
+#if  (LLVM_VERSION_MAJOR == 4 || LLVM_VERSION_MAJOR == 5 )
 // This function takes care about the LLVM/Clang bug which was fixed in LLVM6/Clang6.
 // The body of the function is a backport from LLVM6.
 std::string getQualifiedNameAsStringLLVM5Fix( NamedDecl const *E) {
@@ -67,7 +96,7 @@ std::string getQualifiedNameAsStringLLVM5Fix( NamedDecl const *E) {
 		Contexts.push_back(Ctx);
 		Ctx = Ctx->getParent();
 	}
-	for (const DeclContext *DC : reverse(Contexts)) {
+	for (const DeclContext *DC : std::reverse(Contexts)) {
 		if (const auto *ED = dyn_cast<EnumDecl>(DC)) {
 			if ( ED->isScoped() ) {
 				OS<<*ED; OS<<"::";
@@ -80,7 +109,7 @@ std::string getQualifiedNameAsStringLLVM5Fix( NamedDecl const *E) {
 	if ((E->getDeclName() || isa<DecompositionDecl>(E))) OS<<*E; else  OS<<"(anonymous)";
 	return correct;
 }
-
+#endif
 // Generate binding for given function: py::enum_<MyEnum>(module, "MyEnum")...
 std::string bind_enum(std::string const & module, EnumDecl const *E)
 {
@@ -96,8 +125,12 @@ std::string bind_enum(std::string const & module, EnumDecl const *E)
 	for(auto e = E->enumerator_begin(); e != E->enumerator_end(); ++e) {
 #if  (LLVM_VERSION_MAJOR > 5)
 		r += "\t\t.value(\"{}\", {})\n"_format(e->getNameAsString(), e->getQualifiedNameAsString());
-#else
+#endif
+#if  (LLVM_VERSION_MAJOR == 4 || LLVM_VERSION_MAJOR == 5 )
 		r += "\t\t.value(\"{}\", {})\n"_format(e->getNameAsString(), getQualifiedNameAsStringLLVM5Fix(*e));
+#endif
+#if  (LLVM_VERSION_MAJOR == 3)
+		r += "\t\t.value(\"{}\", {})\n"_format(e->getNameAsString(), getQualifiedNameAsStringLLVM3Fix(*e));
 #endif
 	}
 	r.pop_back();
