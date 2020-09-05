@@ -11,7 +11,16 @@
 /// @author Sergey Lyskov
 
 #include <iostream>
+#ifdef _MSC_VER
+#include <direct.h>
+inline int binder_mkdir(const char *dirname){ return _mkdir(dirname);}
+#else
 #include <sys/stat.h>
+#ifndef ACCESSPERMS
+#define ACCESSPERMS (S_IRWXU|S_IRWXG|S_IRWXO)
+#endif
+inline int binder_mkdir(const char *dirname){ return mkdir(dirname,ACCESSPERMS);}
+#endif
 #include <util.hpp>
 
 #include <binder.hpp>
@@ -118,7 +127,7 @@ void update_source_file(std::string const &prefix, std::string const &file_name,
 	if (!path.empty()) if (path.at(0)=='/')  dir_to_create="/";
 	for(auto &d: split(path, "/")) { 
 		dir_to_create += ( d + '/' ); 
-		int status=mkdir(dir_to_create.c_str(),ACCESSPERMS);
+		int status=binder_mkdir(dir_to_create.c_str());
 		if (status==0||status==EEXIST) continue;
 		std::cerr<<"Failed to create directory: "<<dir_to_create<<std::endl;
 		exit(1);

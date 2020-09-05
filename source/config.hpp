@@ -20,7 +20,6 @@
 
 #ifdef _MSC_VER
 #include <ciso646>
-using unsigned int = unsigned int;
 #endif
 
 namespace binder {

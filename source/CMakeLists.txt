@@ -37,7 +37,7 @@ if(USE_EXTERNAL_LLVM)
   if (MSVC)
 #This is a workaround for VC memory problem and false positive warnings.
     include(CheckCXXCompilerFlag)
-    set(MSVC_CXX_FLAGS_TO_CHECK "/bigobj" "/EHsc" "/D_CRT_SECURE_NO_WARNINGS" "/wd4267" "/wd4244" "/wd4477" "/wd4624"  "/wd4291"  "/wd4146" )
+    set(MSVC_CXX_FLAGS_TO_CHECK "/bigobj" "/EHsc" "/D_CRT_SECURE_NO_WARNINGS" "/wd4267" "/wd4244" "/wd4477" "/wd4624"  "/wd4291"  "/wd4146" "/wd4530")
     foreach(fl ${MSVC_CXX_FLAGS_TO_CHECK})
       CHECK_CXX_COMPILER_FLAG(${fl} COMPILER_SUPPORTS_${fl})
       if(COMPILER_SUPPORTS_${fl})
