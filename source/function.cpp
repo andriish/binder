@@ -335,10 +335,10 @@ string bind_function(FunctionDecl const *F, uint args_to_bind, bool request_bind
 		documentation = generate_documentation_string_for_declaration(F);
 		if( documentation.size() ) documentation += "\\n\\n";
 #if  (LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR < 5  )
-		documentation += "C++: " + F->getQualifiedNameAsString() + "(" + function_arguments(F) + ')' + (m  and  m->isConst() ? " const" : "") + " --> " + standard_name( F->getResultType().getCanonicalType().getAsString() );
+		documentation += "C++: " + standard_name(F->getQualifiedNameAsString() + "(" + function_arguments(F) + ')' + (m  and  m->isConst() ? " const" : "") + " --> " +  F->getResultType().getCanonicalType().getAsString() );
 #endif
 #if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
-		documentation += "C++: " + F->getQualifiedNameAsString() + "(" + function_arguments(F) + ')' + (m  and  m->isConst() ? " const" : "") + " --> " + standard_name( F->getReturnType().getCanonicalType().getAsString() );
+		documentation += "C++: " + standard_name(F->getQualifiedNameAsString() + "(" + function_arguments(F) + ')' + (m  and  m->isConst() ? " const" : "") + " --> " +  F->getReturnType().getCanonicalType().getAsString() );
 #endif
 	}
 	else {
