@@ -78,7 +78,7 @@ if(USE_EXTERNAL_LLVM)
     target_link_libraries(binder PRIVATE       -Wl,--start-group ${STATIC_LINK_FLAG}  ${STATIC_BUILD_STATIC_LIBRARIES}  
       ${STATIC_LINK_FLAG}
       clang
-      clangAnalysis 
+      clangAnalysis
       clangARCMigrate
       clangAST
       clangASTMatchers
@@ -118,13 +118,13 @@ if(USE_EXTERNAL_LLVM)
     set(STATIC_BUILD_REQUIRED_STATIC_LIBRARY_NAMES   LLVMOption LLVMSupport LLVMBitReader LLVMMC LLVMTransformUtils LLVMCore LLVMMCParser tinfo)
     check_static_libraries()
     target_link_libraries(binder PRIVATE 
-      ${STATIC_LINK_FLAG} ${STATIC_BUILD_STATIC_LIBRARIES} 
+      ${STATIC_LINK_FLAG} ${STATIC_BUILD_STATIC_LIBRARIES}
       ${STATIC_LINK_FLAG}
-        clangTooling
-        clangBasic
-        clangAST
-        clangFrontend
-        clangSerialization
+      clangTooling
+      clangBasic
+      clangAST
+      clangFrontend
+      clangSerialization
       ${DYNAMIC_LINK_FLAG}  ${REQUIRED_DYNAMIC_LIBRARY_NAMES} ${lib_llvm_so_path}
       )
   endif()
@@ -132,12 +132,12 @@ if(USE_EXTERNAL_LLVM)
     set(STATIC_BUILD_REQUIRED_STATIC_LIBRARY_NAMES   LLVMOption LLVMSupport LLVMBitReader LLVMMC LLVMTransformUtils LLVMCore LLVMMCParser tinfo)
     check_static_libraries()
     target_link_libraries(binder PRIVATE 
-      ${STATIC_LINK_FLAG} ${STATIC_BUILD_STATIC_LIBRARIES} 
+      ${STATIC_LINK_FLAG} ${STATIC_BUILD_STATIC_LIBRARIES}
       ${STATIC_LINK_FLAG}
-        clang 
+        clang
         clang-cpp
-      ${DYNAMIC_LINK_FLAG}  ${REQUIRED_DYNAMIC_LIBRARY_NAMES} ${lib_llvm_so_path}
-    )
+        ${DYNAMIC_LINK_FLAG}  ${REQUIRED_DYNAMIC_LIBRARY_NAMES} ${lib_llvm_so_path}
+        )
   endif()
 else()
   target_link_libraries(binder

@@ -96,7 +96,8 @@ std::string getQualifiedNameAsStringLLVM5Fix( NamedDecl const *E) {
 		Contexts.push_back(Ctx);
 		Ctx = Ctx->getParent();
 	}
-	for (const DeclContext *DC : std::reverse(Contexts)) {
+	for (auto DCI=Contexts.rbegin(); DCI!=Contexts.rend();++DCI) {
+		auto DC=*DCI;
 		if (const auto *ED = dyn_cast<EnumDecl>(DC)) {
 			if ( ED->isScoped() ) {
 				OS<<*ED; OS<<"::";
@@ -110,6 +111,7 @@ std::string getQualifiedNameAsStringLLVM5Fix( NamedDecl const *E) {
 	return correct;
 }
 #endif
+
 // Generate binding for given function: py::enum_<MyEnum>(module, "MyEnum")...
 std::string bind_enum(std::string const & module, EnumDecl const *E)
 {

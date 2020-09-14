@@ -13,14 +13,12 @@
 #include <binder.hpp>
 
 // Declares clang::SyntaxOnlyAction.
-#if  (LLVM_VERSION_MAJOR < 4)
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/ASTContext.h"
+#if  (LLVM_VERSION_MAJOR < 4)
 typedef clang::ASTConsumer* ASTConsumerPtr;
 #endif
 #if (LLVM_VERSION_MAJOR >= 4)
-#include "clang/AST/ASTConsumer.h"
-#include "clang/AST/ASTContext.h"
 #include "clang/Frontend/FrontendActions.h"
 typedef std::unique_ptr<clang::ASTConsumer> ASTConsumerPtr;
 #endif
