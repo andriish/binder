@@ -49,6 +49,7 @@ macro( binder_test testname vers)
     endif()
     set_source_files_properties( ${CMAKE_CURRENT_BINARY_DIR}/${testnamenodot}.cpp PROPERTIES GENERATED TRUE)
     add_dependencies(${testnamenodot}${vers}  target${testnamenodot}cpp)
+    target_compile_definitions(${testnamenodot}${vers} -D__binder__)
     set_target_properties(${testnamenodot}${vers} PROPERTIES OUTPUT_NAME  ${testnamenodot}
                                                NO_SYSTEM_FROM_IMPORTED ON
                                                ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/py${vers}/${CMAKE_INSTALL_LIBDIR}/$<0:> 
