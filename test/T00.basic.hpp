@@ -23,6 +23,12 @@ float global_float;
 double global_double;
 
 void foo() {}
+#ifdef __binder__
+void foo_ifdef_binder() { }
+#endif
+#ifndef __binder__
+void foo_ifndef_binder() { }
+#endif
 
 int foo_char(char)   { return 0; }
 int foo_char(char &) { return 0; }
@@ -39,6 +45,7 @@ float foo_float(float *) { return 0; }
 double foo_double(double)   { return 0; }
 double foo_double(double &) { return 0; }
 double foo_double(double *) { return 0; }
+
 
 using VoidP = void *;
 
