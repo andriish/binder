@@ -3,6 +3,7 @@
 #include <T00.basic.hpp> // foo_char
 #include <T00.basic.hpp> // foo_double
 #include <T00.basic.hpp> // foo_float
+#include <T00.basic.hpp> // foo_if_binder
 #include <T00.basic.hpp> // foo_int
 #include <T00.basic.hpp> // foo_void_p
 
