@@ -24,6 +24,7 @@
 #include <clang/Frontend/CompilerInstance.h>
 #include <clang/AST/Comment.h>
 #include <clang/Basic/Diagnostic.h>
+#include <clang/Basic/MacroBuilder.h>
 
 #include <llvm/Support/CommandLine.h> // Declares llvm::cl::extrahelp
 
@@ -129,6 +130,16 @@ public:
 			di.setSuppressAllDiagnostics(true);
 #endif
 		}
+		auto& PP=ci->getPreprocessor();
+		std::string PredefineBuffer=PP.getPredefines();
+		PredefineBuffer.reserve(2048*4);
+		llvm::raw_string_ostream Predefines(PredefineBuffer);
+		MacroBuilder Builder(Predefines);
+		Builder.defineMacro("__binder__");
+		Builder.defineMacro("__binder_major__", "1");
+		Builder.defineMacro("__binder_minor__", "0");
+		Builder.defineMacro("__binder_patchlevel__", "0");
+		PP.setPredefines(Predefines.str());
 	}
 
 	virtual ~BinderVisitor() {}
