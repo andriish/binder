@@ -25,6 +25,7 @@
 #include <clang/AST/Comment.h>
 #include <clang/Basic/Diagnostic.h>
 #include <clang/Basic/MacroBuilder.h>
+#include <clang/Lex/Preprocessor.h>
 
 #include <llvm/Support/CommandLine.h> // Declares llvm::cl::extrahelp
 
