@@ -1,4 +1,7 @@
 // File: T09_overload.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T09.overload.hpp> // A1
 #include <T09.overload.hpp> // A2
 #include <T09.overload.hpp> // A3

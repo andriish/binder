@@ -1,4 +1,7 @@
 // File: T02_function.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T02.function.hpp> // A
 #include <T02.function.hpp> // foo
 #include <T02.function.hpp> // foo_cr

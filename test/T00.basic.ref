@@ -1,4 +1,7 @@
 // File: T00_basic.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T00.basic.hpp> // foo
 #include <T00.basic.hpp> // foo_char
 #include <T00.basic.hpp> // foo_double

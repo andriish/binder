@@ -1,4 +1,7 @@
 // File: T32_call_guard.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T32.call_guard.hpp> // Methods
 #include <T32.call_guard.hpp> // free
 #include <sstream> // __str__

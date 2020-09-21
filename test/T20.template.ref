@@ -1,4 +1,7 @@
 // File: T20_template.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T20.template.hpp> // A
 #include <T20.template.hpp> // add
 #include <T20.template.hpp> // fi

@@ -1,4 +1,7 @@
 // File: T11_override.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T11.override.hpp> // Base
 #include <iterator> // __gnu_cxx::__normal_iterator
 #include <memory> // std::allocator

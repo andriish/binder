@@ -1,4 +1,7 @@
 // File: std/stl_list.cpp Code size: 6119
+#ifndef __binder__
+#define __binder__
+#endif
 #include <deque> // std::deque
 #include <iterator> // __gnu_cxx::__normal_iterator
 #include <list> // std::list
@@ -135,6 +138,9 @@ void bind_std_stl_list(std::function< pybind11::module &(std::string const &name
 
 
 // File: std/forward_list.cpp Code size: 5719
+#ifndef __binder__
+#define __binder__
+#endif
 #include <forward_list> // std::forward_list
 #include <memory> // std::allocator
 #include <sstream> // __str__
@@ -188,6 +194,9 @@ void bind_std_forward_list(std::function< pybind11::module &(std::string const &
 
 
 // File: T42_stl_names.cpp Code size: 284
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T42.stl.names.hpp> // foo
 #include <deque> // std::deque
 #include <forward_list> // std::forward_list

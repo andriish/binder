@@ -1,4 +1,7 @@
 // File: std/stl_vector.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <iterator> // __gnu_cxx::__normal_iterator
 #include <memory> // std::allocator
 #include <sstream> // __str__
@@ -26,6 +29,9 @@ void bind_std_stl_vector(std::function< pybind11::module &(std::string const &na
 
 
 // File: T40_stl.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T40.stl.hpp> // foo
 #include <iterator> // __gnu_cxx::__normal_iterator
 #include <memory> // std::allocator

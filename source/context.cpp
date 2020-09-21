@@ -186,7 +186,7 @@ std::set<string> Context::create_all_nested_namespaces()
 // generate code for include directives and cleanup the includes vector
 string generate_include_directives(IncludeSet const &include_set)
 {
-	string r;
+	string r="#ifndef __binder__\n#define __binder__\n#endif\n";
 	for(auto &i : std::set<string>(include_set.includes().begin(), include_set.includes().end() ) )
 		if( !Config::get().is_include_skipping_requested(i) ) r += "#include " + i + '\n';
 

@@ -1,4 +1,7 @@
 // File: std/stl_function.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <exception> // std::bad_exception
 #include <exception> // std::exception
 #include <exception> // std::terminate
@@ -38,6 +41,9 @@ void bind_std_stl_function(std::function< pybind11::module &(std::string const &
 
 
 // File: std/functional_hash.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <functional> // std::_Manager_operation
 #include <functional> // std::bad_function_call
 #include <functional> // std::hash
@@ -129,6 +135,9 @@ void bind_std_functional_hash(std::function< pybind11::module &(std::string cons
 
 
 // File: std/unordered_set.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <functional> // std::equal_to
 #include <functional> // std::hash
 #include <memory> // std::allocator
@@ -218,6 +227,9 @@ void bind_std_unordered_set(std::function< pybind11::module &(std::string const 
 
 
 // File: T42_stl_names_multi.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T42.stl.names.multi.hpp> // foo
 #include <functional> // std::equal_to
 #include <functional> // std::hash

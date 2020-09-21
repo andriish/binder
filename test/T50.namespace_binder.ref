@@ -1,4 +1,7 @@
 // File: T50_namespace_binder.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T50.namespace_binder.hpp> // foo_root
 
 #include <pybind11/pybind11.h>
@@ -21,6 +24,9 @@ void bind_T50_namespace_binder(std::function< pybind11::module &(std::string con
 
 
 // File: T50_namespace_binder_1.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T50.namespace_binder.a.1.include>
 #include <T50.namespace_binder.a.2.include>
 #include <T50.namespace_binder.hpp> // aaaa::foo_aaaa
@@ -47,6 +53,9 @@ void bind_T50_namespace_binder_1(std::function< pybind11::module &(std::string c
 
 
 // File: T50_namespace_binder_2.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T50.namespace_binder.a.b.include>
 
 #include <pybind11/pybind11.h>

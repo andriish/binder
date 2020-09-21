@@ -1,4 +1,7 @@
 // File: T07_class.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T07.class.hpp> // Access
 #include <T07.class.hpp> // Arrays
 #include <T07.class.hpp> // ConstOverload

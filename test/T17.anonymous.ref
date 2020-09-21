@@ -1,4 +1,7 @@
 // File: T17_anonymous.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T17.anonymous.hpp> // S
 #include <T17.anonymous.hpp> // S::_D
 #include <T17.anonymous.hpp> // _S2

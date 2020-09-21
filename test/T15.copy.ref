@@ -1,4 +1,7 @@
 // File: T15_copy.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T15.copy.hpp> // Data1
 #include <T15.copy.hpp> // POD1
 #include <T15.copy.hpp> // POD2

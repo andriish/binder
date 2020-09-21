@@ -1,4 +1,7 @@
 // File: T12_operator.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T12.operator.hpp> // T
 #include <sstream> // __str__
 

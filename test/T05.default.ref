@@ -1,4 +1,7 @@
 // File: T05_default.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T05.default.hpp> // A
 #include <T05.default.hpp> // B
 #include <T05.default.hpp> // foo

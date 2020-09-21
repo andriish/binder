@@ -1,4 +1,7 @@
 // File: std/stl_function.cpp Code size: 468
+#ifndef __binder__
+#define __binder__
+#endif
 #include <exception> // std::bad_exception
 #include <exception> // std::exception
 #include <exception> // std::terminate
@@ -36,6 +39,9 @@ void bind_std_stl_function(std::function< pybind11::module &(std::string const &
 
 
 // File: std/functional_hash.cpp Code size: 428
+#ifndef __binder__
+#define __binder__
+#endif
 #include <functional> // std::_Manager_operation
 #include <functional> // std::bad_function_call
 #include <functional> // std::hash
@@ -79,6 +85,9 @@ void bind_std_functional_hash(std::function< pybind11::module &(std::string cons
 
 
 // File: std/stl_map.cpp Code size: 6709
+#ifndef __binder__
+#define __binder__
+#endif
 #include <functional> // std::equal_to
 #include <functional> // std::hash
 #include <functional> // std::less
@@ -177,6 +186,9 @@ void bind_std_stl_map(std::function< pybind11::module &(std::string const &names
 
 
 // File: T42_stl_names_map.cpp Code size: 459
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T42.stl.names.map.hpp> // foo
 #include <functional> // std::equal_to
 #include <functional> // std::hash

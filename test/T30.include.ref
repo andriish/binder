@@ -1,4 +1,7 @@
 // File: T30_include_incl_a_include.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T30.include.incl.a.include> // aaaa::A
 #include <sstream> // __str__
 
@@ -23,6 +26,9 @@ void bind_T30_include_incl_a_include(std::function< pybind11::module &(std::stri
 
 
 // File: T30_include_incl_b_include.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T30.include.incl.a.include> // aaaa::A
 #include <T30.include.incl.b.include> // bbbb::B
 #include <sstream> // __str__
@@ -48,6 +54,9 @@ void bind_T30_include_incl_b_include(std::function< pybind11::module &(std::stri
 
 
 // File: T30_include.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T30.include.hpp> // foo
 #include <T30.include.incl.a.include> // aaaa::A
 #include <T30.include.incl.b.include> // bbbb::B

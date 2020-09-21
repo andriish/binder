@@ -1,4 +1,7 @@
 // File: T08_constructor.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T08.constructor.hpp> // BaseA
 #include <T08.constructor.hpp> // BaseB
 #include <T08.constructor.hpp> // BaseC

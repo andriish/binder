@@ -1,4 +1,7 @@
 // File: T10_inheritance.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T10.inheritance.hpp> // A
 #include <T10.inheritance.hpp> // B
 #include <T10.inheritance.hpp> // Base

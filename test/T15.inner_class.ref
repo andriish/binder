@@ -1,4 +1,7 @@
 // File: T15_inner_class.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T15.inner_class.hpp> // Base
 #include <T15.inner_class.hpp> // Base::InnerBase
 #include <T15.inner_class.hpp> // Base::InnerTemplate
@@ -75,6 +78,9 @@ void bind_T15_inner_class(std::function< pybind11::module &(std::string const &n
 
 
 // File: T15_inner_class_1.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T15.inner_class.hpp> // Base
 #include <T15.inner_class.hpp> // n1::A
 #include <sstream> // __str__
@@ -120,6 +126,9 @@ void bind_T15_inner_class_1(std::function< pybind11::module &(std::string const 
 
 
 // File: T15_inner_class_2.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T15.inner_class.hpp> // Base
 #include <T15.inner_class.hpp> // n1::n2::A
 #include <sstream> // __str__
@@ -165,6 +174,9 @@ void bind_T15_inner_class_2(std::function< pybind11::module &(std::string const 
 
 
 // File: T15_inner_class_3.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T15.inner_class.hpp> // Base
 #include <T15.inner_class.hpp> // instantiate_templates
 

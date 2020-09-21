@@ -1,4 +1,7 @@
 // File: T01_enum.cpp
+#ifndef __binder__
+#define __binder__
+#endif
 #include <T01.enum.hpp> // A
 #include <T01.enum.hpp> // E1
 #include <T01.enum.hpp> // E2_struct
