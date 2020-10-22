@@ -75,9 +75,9 @@ set( binder_tests
          T05.default
          T07.class
          T08.constructor
-         T09.overload
-         T10.inheritance
-         T11.override
+#         T09.overload
+#         T10.inheritance
+#         T11.override
          T12.operator
          T15.copy
 #         T15.inner_class
