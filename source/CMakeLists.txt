@@ -63,7 +63,17 @@ if(USE_EXTERNAL_LLVM)
     set(STATIC_LINK_FLAG "-Wl,-Bstatic")
     set(lib_llvm_so_path  "")
   else()
-    set(STATIC_LINK_FLAG  )
+    if(CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin")
+      set(lib_llvm_path )
+    else()
+      find_library(lib_llvm_path NAMES LLVM
+                               LLVM-${LLVM_VERSION_MAJOR}
+                               LLVM-${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}
+                               LLVM-${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}
+                               PATHS  ${LLVM_LIBRARY_DIR}  ${LLVMLIBDIR}
+                               REQUIRED
+                               )
+     endif()
   endif()
 
   add_definitions(${LLVM_DEFINITIONS})
