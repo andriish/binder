@@ -678,7 +678,7 @@ string bind_member_functions_for_call_back(CXXRecordDecl const *C, string const 
 			string return_type = standard_name(m->getResultType().getCanonicalType().getAsString());  fix_boolean_types(return_type);
 #endif
 #if  (LLVM_VERSION_MAJOR >= 4 || ( LLVM_VERSION_MAJOR == 3 && LLVM_VERSION_MINOR >= 5 ) )
-			string return_type = standard_name(m->getReturnType().getCanonicalType().getAsString());  fix_boolean_types(return_type);
+			string return_type = standard_name( m->getReturnType().getCanonicalType().getAsString() );  fix_boolean_types(return_type);
 #endif			
 
 			// check if we need to fix return class to be 'derived-class &' or 'derived-class *'

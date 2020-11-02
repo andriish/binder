@@ -9,7 +9,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 #So far there are exceptions in config.cpp
 set(LLVM_REQUIRES_EH ON)
 set(USE_EXTERNAL_LLVM ON)
-option(STATIC_BUILD "Link LLVM and Clang linraries statically" OFF)
 include("GNUInstallDirs")
 set(LLVM_DIR_ORIG ${LLVM_DIR})
 set(Clang_DIR_ORIG ${Clang_DIR})

@@ -85,23 +85,23 @@ set( binder_tests
          T05.default
          T07.class
          T08.constructor
-#         T09.overload
-#         T10.inheritance
-#         T11.override
+         T09.overload
+         T10.inheritance
+         T11.override
          T12.operator
          T15.copy
-#         T15.inner_class
-#         T17.anonymous
+         T15.inner_class
+         T17.anonymous
          T20.template
          T30.include
          T31.include_for_class
          T32.call_guard
          T40.stl
-#         T42.stl.names
-#         T42.stl.names.map
-#         T42.stl.names.set
-#         T42.stl.names.multimap
-#         T42.stl.names.multiset
+         T42.stl.names
+         T42.stl.names.map
+         T42.stl.names.set
+         T42.stl.names.multimap
+         T42.stl.names.multiset
          T50.namespace_binder
          )
 if (pybind11_VERSION VERSION_LESS 2.5.99)
