@@ -127,12 +127,13 @@ std::string bind_enum(std::string const & module, EnumDecl const *E)
 	for(auto e = E->enumerator_begin(); e != E->enumerator_end(); ++e) {
 #if  (LLVM_VERSION_MAJOR > 5)
 		r += "\t\t.value(\"{}\", {})\n"_format(e->getNameAsString(), e->getQualifiedNameAsString());
-#endif
+#else
 #if  (LLVM_VERSION_MAJOR == 4 || LLVM_VERSION_MAJOR == 5 )
 		r += "\t\t.value(\"{}\", {})\n"_format(e->getNameAsString(), getQualifiedNameAsStringLLVM5Fix(*e));
 #endif
 #if  (LLVM_VERSION_MAJOR == 3)
 		r += "\t\t.value(\"{}\", {})\n"_format(e->getNameAsString(), getQualifiedNameAsStringLLVM3Fix(*e));
+#endif
 #endif
 	}
 	r.pop_back();

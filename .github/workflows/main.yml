@@ -143,17 +143,3 @@ jobs:
       uses: ./.github/workflows/centos7
     - name: Get the output status
       run: exit ${{ steps.compileindocker.outputs.out }}
-
-
-  compilejobCentOS7static:
-    runs-on: ubuntu-latest
-    name: Binder_on_CentOS7static
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Compile
-      id: compileindocker
-      uses: ./.github/workflows/centos7static
-    - name: Get the output status
-      run: exit ${{ steps.compileindocker.outputs.out }}
-
