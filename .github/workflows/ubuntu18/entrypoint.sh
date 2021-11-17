@@ -5,8 +5,8 @@ cat /etc/issue
 apt -y update
 add-apt-repository -y universe multiverse
 apt -y update
-apt-get -y install  git  zlib1g zlib1g-dev ncurses-dev  clang libclang-dev clang-libs  llvm llvm-dev
-apt-get -y install  cmake make gcc gcc-c++
+apt-get -y install  git  zlib1g zlib1g-dev ncurses-dev  clang libclang-dev   llvm llvm-dev
+apt-get -y install  cmake make gcc 
 apt-get -y install  pybind11-dev python python-dev 
 
 cmake CMakeLists.txt
