@@ -69,18 +69,15 @@ if(USE_EXTERNAL_LLVM)
       clangFrontend
       clangTooling
       )
-    if (LLVM_VERSION_MAJOR EQUAL 6)     
-      target_link_libraries(binder PRIVATE clangLex)
-    endif()
   endif()
   if ( (LLVM_VERSION_MAJOR EQUAL 8) OR (LLVM_VERSION_MAJOR EQUAL 9) )
     target_link_libraries(binder
       PRIVATE
       ${lib_llvm_path}
-      clangAST
-      clangBasic
-      clangFrontend
       clangTooling
+      clangBasic
+      clangAST
+      clangFrontend
       clangSerialization
       )
   endif()
@@ -110,11 +107,11 @@ if(USE_EXTERNAL_LLVM)
 else()
   target_link_libraries(binder
     PRIVATE
-    clangAST
-    clangBasic
-    clangFrontend
     clangTooling
+    clangBasic
     clangASTMatchers
+    clangAST
+    clangFrontend
     )
 endif()
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/binder
