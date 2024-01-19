@@ -46,6 +46,11 @@ if (Clang_FOUND AND LLVM_FOUND AND NOT LLVMCONFIG )
     ${LLVM_LIBRARY_DIR}/../../lib/clang/${LLVM_VERSION}/include
     ${LLVM_LIBRARY_DIR}/../../lib64/clang/${LLVM_VERSION}/include
     ${CLANG_INCLUDE_DIRS}/clang/${LLVM_VERSION}/include
+    ${LLVM_LIBRARY_DIR}/clang/${LLVM_VERSION_MAJOR}/include
+    ${LLVM_LIBRARY_DIR}/../clang/${LLVM_VERSION_MAJOR}/include
+    ${LLVM_LIBRARY_DIR}/../../lib/clang/${LLVM_VERSION_MAJOR}/include
+    ${LLVM_LIBRARY_DIR}/../../lib64/clang/${LLVM_VERSION_MAJOR}/include
+    ${CLANG_INCLUDE_DIRS}/clang/${LLVM_VERSION}/include
     ${LLVM_LIBRARY_DIR}/clang/${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}/include
     ${LLVM_LIBRARY_DIR}/../clang/${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}/include
     ${LLVM_LIBRARY_DIR}/../../lib/clang/${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}/include
@@ -101,6 +106,12 @@ else()
       ${LLVMINCLUDEDIR}/../../lib/clang/${LLVMVERSION}/include
       ${LLVMINCLUDEDIR}/../../lib64/clang/${LLVMVERSION}/include
       ${CLANG_INCLUDE_DIRS}/clang/${LLVMVERSION}/include
+      ${CLANG_INCLUDE_DIRS}
+      ${LLVMINCLUDEDIR}/clang/${LLVM_VERSION_MAJOR}/include
+      ${LLVMINCLUDEDIR}/../clang/${LLVM_VERSION_MAJOR}/include
+      ${LLVMINCLUDEDIR}/../../lib/clang/${LLVM_VERSION_MAJOR}/include
+      ${LLVMINCLUDEDIR}/../../lib64/clang/${LLVM_VERSION_MAJOR}/include
+      ${CLANG_INCLUDE_DIRS}/clang/${LLVM_VERSION_MAJOR}/include
       ${CLANG_INCLUDE_DIRS}
       )
     MESSAGE(STATUS  "binder: llvm version from ${LLVMCONFIGEXE} is ${LLVMVERSION}")
